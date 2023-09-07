@@ -29,8 +29,9 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": [
-              "src/styles.scss"
+            "styles": [ 
+              "node_modules/bootstrap/scss/bootstrap.scss",
+              "src/styles/styles.scss"
             ],
             "scripts": []
           },
@@ -93,12 +94,16 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "node_modules/bootstrap/scss/bootstrap.scss",
+              "src/styles/styles.scss"
             ],
             "scripts": []
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

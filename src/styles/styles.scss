@@ -1,0 +1,12 @@
+@import './colors';
+
+body {
+  height: 100vh;
+  background: $capgemini-blue;
+  color: $white;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+a {
+  color: $zest-green;
+}

@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Question 1</h1>
+      <p>
+        description with a lot of text that will be here tfor the user too read
+      </p>
+      <form [formGroup]="optionsForm" class="options">
+        <div *ngFor="let option of question.options; let i">
+          <input
+            id="chosenOption{{ i }}"
+            type="radio"
+            [value]="option"
+            name="chosenOption"
+            formControlName="chosenOption"
+          />
+          <label>{{ option }}</label>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
