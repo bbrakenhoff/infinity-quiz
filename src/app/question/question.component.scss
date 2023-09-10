@@ -1,0 +1,13 @@
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../styles/colors";
+
+.btn-zest-green {
+  @include button-variant(
+    $background: $zest-green,
+    $border: darken($zest-green, 7.5%),
+    $color: white,
+    $hover-color: white
+  );
+}

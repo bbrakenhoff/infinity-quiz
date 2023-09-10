@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Question } from 'src/models/question';
 import { RandomQuestionService } from './random-question.service';
+import { confetti, ConfettiOptions } from 'tsparticles-confetti';
+import {
+  emojiConfettiOptions,
+  normalConfettiOptions,
+} from './confetti-options';
 
 @Component({
   selector: 'app-question',
@@ -12,11 +16,24 @@ export class QuestionComponent {
   currentQuestion: Question = this.randomQuestionService.nextQuestion();
 
   chosenOptionIndex: number | null = null;
+  chosenOptionCorrect: null | boolean = null;
+
+  readonly confettiOptions = {
+    emoji: emojiConfettiOptions,
+    normal: normalConfettiOptions,
+  };
 
   constructor(private readonly randomQuestionService: RandomQuestionService) {}
 
-  onOptionSelected(): void {
+  onOptionSelected() {
+    this.chosenOptionCorrect =
+      this.chosenOptionIndex !== null &&
+      this.chosenOptionIndex - 1 === this.currentQuestion.correctOptionIndex;
+  }
+
+  nextQuestion(): void {
     this.currentQuestion = this.randomQuestionService.nextQuestion();
     this.chosenOptionIndex = null;
+    this.chosenOptionCorrect = null;
   }
 }

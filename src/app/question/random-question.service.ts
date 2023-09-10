@@ -11,7 +11,7 @@ export class RandomQuestionService {
 
   constructor(
     @Inject(QUESTIONS_TOKEN)
-    private readonly allQuestions: Question[] = [...QxDayScenarios]
+    private readonly allQuestions: Question[] = QxDayScenarios
   ) {}
 
   nextQuestion(): Question {
@@ -26,7 +26,9 @@ export class RandomQuestionService {
 
   private resetRemainingQuestions(): void {
     if (this.remainingQuestions.length === 0) {
-      this.remainingQuestions = [...this.allQuestions];
+      this.remainingQuestions = [
+        ...this.allQuestions.filter((q) => q.correctOptionIndex === 0),
+      ];
     }
   }
 

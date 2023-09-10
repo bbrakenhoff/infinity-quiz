@@ -9,10 +9,11 @@ import { QuestionComponent } from './question/question.component';
 import { RandomQuestionService } from './question/random-question.service';
 import { QUESTIONS_TOKEN } from './questions.token';
 import { StartQuizComponent } from './start-quiz/start-quiz.component';
+import { NgConfettiModule } from 'ng-confetti';
 
 @NgModule({
   declarations: [AppComponent, StartQuizComponent, QuestionComponent],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, NgConfettiModule],
   providers: [
     { provide: QUESTIONS_TOKEN, useValue: QxDayScenarios },
     RandomQuestionService,
