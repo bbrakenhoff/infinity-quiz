@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { Question } from 'src/models/question';
-import { QxDayScenarios } from 'src/models/qx-day-scenarios';
+import { Question } from 'src/app/models/question';
+import { QxDayScenarios } from 'src/app/models/qx-day-scenarios';
 import { QUESTIONS_TOKEN } from '../questions.token';
 
 @Injectable({

@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "infinity-quiz-9d2b3": {
+      "hosting": {
+        "infinity-quiz": [
+          "infinity-quiz-9d2b3"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "infinity-quiz-9d2b3"
+  }
+}

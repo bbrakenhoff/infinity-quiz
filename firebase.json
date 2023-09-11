@@ -1,0 +1,9 @@
+{
+  "hosting": [
+    {
+      "target": "infinity-quiz",
+      "source": ".",
+      "frameworksBackend": {}
+    }
+  ]
+}

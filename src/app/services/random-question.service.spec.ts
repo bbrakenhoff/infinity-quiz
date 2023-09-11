@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { RandomQuestionService } from './random-question.service';
-import { Question } from 'src/models/question';
+import { Question } from 'src/app/models/question';
 import { QUESTIONS_TOKEN } from '../questions.token';
 
 describe('RandomQuestionService', () => {

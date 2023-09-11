@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Question } from 'src/models/question';
-import { RandomQuestionService } from './random-question.service';
+import { Question } from 'src/app/models/question';
+import { RandomQuestionService } from '../services/random-question.service';
 import { confetti, ConfettiOptions } from 'tsparticles-confetti';
 import {
   emojiConfettiOptions,
