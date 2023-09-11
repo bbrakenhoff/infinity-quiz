@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RandomQuestionService } from './random-question.service';
 import { Question } from 'src/app/models/question';
-import { QUESTIONS_TOKEN } from '../questions.token';
+import { QuestionLoadingService } from './question-loading.service';
+import { RandomQuestionService } from './random-question.service';
 
 describe('RandomQuestionService', () => {
   let service: RandomQuestionService;
 
-  const testQuestions: Question[] = [
+  const mockQuestions: Question[] = [
     {
       title: 'Which song by Ed Sheeran mentions the city of Barcelona?',
       description:
@@ -54,7 +54,14 @@ describe('RandomQuestionService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: QUESTIONS_TOKEN, useValue: testQuestions }],
+      providers: [
+        {
+          provide: QuestionLoadingService,
+          useValue: {
+            allQuestions: mockQuestions,
+          },
+        },
+      ],
     });
     service = TestBed.inject(RandomQuestionService);
   });
@@ -63,27 +70,46 @@ describe('RandomQuestionService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('nextQuestion()', () => {
-    it('should return a question from the list', () => {
-      const result = service.nextQuestion();
-      expect(testQuestions).toContain(result);
+  describe('getNextQuestion()', () => {
+    it('should return a random question', () => {
+      const nextQuestion = service.getNextQuestion();
+      expect(mockQuestions).toContain(nextQuestion);
     });
 
-    it('should not return the same question consecutively until all are chosen', () => {
-      const results = new Set<Question>();
-      for (let i = 0; i < testQuestions.length; i++) {
-        results.add(service.nextQuestion());
+    it('should eventually exhaust all questions and reset', () => {
+      for (let i = 0; i < mockQuestions.length; i++) {
+       service.getNextQuestion();
       }
 
-      expect(results.size).toEqual(testQuestions.length);
+      // At this point, the questions queue should be empty
+      expect((service as any).questionsQueue.length).toBe(0);
+
+      // Calling getNextQuestion again should refill the queue
+      const mostRecentQuestion: Question = service.getNextQuestion();
+      expect((service as any).questionsQueue.length).toEqual(
+        mockQuestions.length - 2
+      );
+
+      // The most recent question should be excluded so it will not be immediately repeated
+      expect((service as any).questionsQueue).not.toContain(
+        mostRecentQuestion!
+      );
     });
 
-    it('should reset after all strings have been chosen', () => {
-      for (let i = 0; i < testQuestions.length; i++) {
-        service.nextQuestion();
+    it('should re-add the most recent question when getNextQuestion is called for the second time after a reset', () => {
+      for (let i = 0; i < mockQuestions.length; i++) {
+        service.getNextQuestion();
       }
-      const resultAfterReset = service.nextQuestion();
-      expect(testQuestions).toContain(resultAfterReset);
+
+      // Calling getNextQuestion again should refill the queue
+      service.getNextQuestion();
+
+      // The most recent question should have been re-added
+      service.getNextQuestion();
+
+      expect((service as any).questionsQueue.length).toEqual(
+        mockQuestions.length - 2
+      );
     });
   });
 });

@@ -8,10 +8,12 @@ import { Subject, of } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class QuizService {
-  constructor(private readonly firestore: Firestore) {}
+export class QuestionLoadingService {
+  public allQuestions!: Question[];
 
-  allQuestions() {
+  public constructor(private readonly firestore: Firestore) {}
+
+  public loadAllQuestions(): void {
     const subject = new Subject<Question[]>();
 
     getDocs(
@@ -19,9 +21,9 @@ export class QuizService {
         new QuestionFirebaseConverter()
       )
     )
-      .then((result) => subject.next(result.docs.map((doc) => doc.data())))
-      .catch((error) => subject.error(error));
-
-    return subject;
+      .then(
+        (result) => (this.allQuestions = result.docs.map((doc) => doc.data()))
+      )
+      .catch((error) => (this.allQuestions = []));
   }
 }

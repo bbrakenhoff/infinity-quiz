@@ -1,20 +1,18 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { FormsModule } from '@angular/forms';
-import { QxDayScenarios } from 'src/app/models/qx-day-scenarios';
+import { NgConfettiModule } from 'ng-confetti';
+import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { QuestionComponent } from './question/question.component';
+import { QuestionLoadingService } from './services/question-loading.service';
 import { RandomQuestionService } from './services/random-question.service';
-import { QUESTIONS_TOKEN } from './questions.token';
 import { StartQuizComponent } from './start-quiz/start-quiz.component';
-import { NgConfettiModule } from 'ng-confetti';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { environment } from '../environments/environment';
-import { provideAuth, getAuth } from '@angular/fire/auth';
-import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-import { QuizService } from './services/quiz.service';
 
 @NgModule({
   declarations: [AppComponent, StartQuizComponent, QuestionComponent],
@@ -28,8 +26,14 @@ import { QuizService } from './services/quiz.service';
     provideFirestore(() => getFirestore()),
   ],
   providers: [
-    { provide: QUESTIONS_TOKEN, useValue: QxDayScenarios },
-    QuizService,
+    QuestionLoadingService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (quizService: QuestionLoadingService) => () =>
+        quizService.loadAllQuestions(),
+      deps: [QuestionLoadingService],
+      multi: true,
+    },
     RandomQuestionService,
   ],
   bootstrap: [AppComponent],

@@ -1,38 +1,64 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Question } from 'src/app/models/question';
-import { QxDayScenarios } from 'src/app/models/qx-day-scenarios';
-import { QUESTIONS_TOKEN } from '../questions.token';
+import { QuestionLoadingService } from './question-loading.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RandomQuestionService {
-  private remainingQuestions: Question[] = [];
+  private readonly allQuestions = this.questionLoadingService.allQuestions;
+  private questionsQueue = [...this.allQuestions];
 
-  constructor(
-    @Inject(QUESTIONS_TOKEN)
-    private readonly allQuestions: Question[] = QxDayScenarios
+  private mostRecentQuestion: Question | null = null;
+  private shouldReAddMostRecentQuestion = false;
+
+  public constructor(
+    private readonly questionLoadingService: QuestionLoadingService
   ) {}
 
-  nextQuestion(): Question {
-    this.resetRemainingQuestions();
-    const nextQuestionIndex = this.nextQuestionIndex();
+  getNextQuestion(): Question {
+    this.resetQuestionsQueue();
 
-    const nextQuestion = this.remainingQuestions[nextQuestionIndex];
-    this.remainingQuestions.splice(nextQuestionIndex, 1);
+    const nextQuestionIndex = this.getNextQuestionIndex();
+    this.mostRecentQuestion = this.questionsQueue.splice(
+      nextQuestionIndex,
+      1
+    )[0];
 
-    return nextQuestion;
+    console.log(
+      `🍟🍔🍕  random-question.service.ts[ln:28] splice`,
+      this.questionsQueue.length
+    );
+
+    return this.mostRecentQuestion;
   }
 
-  private resetRemainingQuestions(): void {
-    if (this.remainingQuestions.length === 0) {
-      this.remainingQuestions = [
-        ...this.allQuestions.filter((q) => q.correctOptionIndex === 0),
-      ];
+  private resetQuestionsQueue(): void {
+    if (this.questionsQueueIsEmpty()) {
+      this.refillQuestionsQueue();
+    } else if (this.shouldReAddMostRecentQuestion) {
+      this.questionsQueue.push(this.mostRecentQuestion!);
+      this.shouldReAddMostRecentQuestion = false;
     }
   }
 
-  private nextQuestionIndex(): number {
-    return Math.floor(Math.random() * this.remainingQuestions.length);
+  private refillQuestionsQueue() {
+    this.shouldReAddMostRecentQuestion = true;
+    this.questionsQueue = this.allQuestions.filter(
+      (question) => question !== this.mostRecentQuestion
+    );
+
+    console.log(
+      `🍟🍔🍕  random-question.service.ts[ln:46] length refilled`,
+      this.questionsQueue.length
+    );
+  }
+
+  private questionsQueueIsEmpty() {
+    return this.questionsQueue.length === 0;
+  }
+
+  private getNextQuestionIndex(): number {
+    return Math.floor(Math.random() * this.questionsQueue.length);
   }
 }
